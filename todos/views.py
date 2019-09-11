@@ -1,5 +1,19 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from .models import Todo
+from django.views.decorators.csrf import csrf_exempt
+import json
+from decouple import config
+import requests
+
+def sendMessage(request, title, due_date):
+    base_url = 'https://api.telegram.org'
+    token = config('TOKEN')
+    send_to_sir = f'{title} (D-day: {due_date})'
+    method = 'sendMessage'
+    chat_ids = ['873780022', '861812746']
+    for chat_id in chat_ids:
+        url = f'{base_url}/bot{token}/{method}?chat_id={chat_id}&text={send_to_sir}'
+        requests.get(url)
 
 
 def index(request):
@@ -42,15 +56,13 @@ def delete(request,pk):
     return redirect('todos:index')
 
 
-def sendMessage(request, title, due_date):
-    import requests
-    from decouple import config
-
-    base_url = "https://api.telegram.org"
-    token = config('DONG_KEY')
-    send_to_sir = f'{title} (D-day: {due_date})'
-    method = "sendMessage"
-    chat_ids = ["873780022", '861812746']
-    for chat_id in chat_ids:
-        url = f"{base_url}/bot{token}/{method}?chat_id={chat_id}&text={send_to_sir}"
-        requests.get(url)
+@csrf_exempt
+def telegram(request):
+    res = json.loads(request.body)
+    text = res.get('message').get('text')
+    chat_id = res.get('message').get('chat').get('id')
+    base = 'https://api.telegram.org'
+    token = config('TOKEN')
+    url = f'{base}/bot{token}/sendMessage?text={text}&chat_id={chat_id}'
+    requests.get(url)
+    return HttpResponse('가랏')
