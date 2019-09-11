@@ -1,10 +1,23 @@
 {% extends 'todos/base.html' %}
 
 {% block body %}
-  <h1>인덱스입니다</h1>
-  {% for todo in todos %}
-    <li>{{todo.due_date}} : {{todo.title}}</li>
-    <a href="{% url 'todos:update' todo.id %}">수정</a>
-    <a href="{% url 'todos:delete' todo.id %}">삭제</a>
-  {% endfor %}
+<h1>게시판</h1>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope='col'>id</th>
+      <th scope='col'>할일</th>
+      <th scope='col'>기한</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for todo in todos %}
+    <tr>
+      <th scope='row'>{{todo.id}}</th>
+      <td>{{todo.title}}</td>
+      <td>{{todo.due_date}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 {% endblock %}
