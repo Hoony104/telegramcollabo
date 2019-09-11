@@ -1,11 +1,14 @@
 {% extends 'todos/base.html' %}
 
 {% block body %}
-<h1>여기는 새글 작성입니다.</h1>
+<h1>할일 추가</h1>
 <form action="{% url 'todos:create' %}" method="post">
   {% csrf_token %}
-  <input type="text" name="title">
-  <input type="date" name="due-date">
+  <label for="title">할일 : </label>
+  <input type="text" name="title" class="form-control">
+
+  <label for="due-date">기한 : </label>
+  <input type="date" name="due-date" class="form-control">
   <input type="submit">
 </form>
 {% endblock %}
